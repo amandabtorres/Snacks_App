@@ -18,7 +18,7 @@ namespace Snacks_App
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddHttpClient();
             return builder.Build();
         }
     }
