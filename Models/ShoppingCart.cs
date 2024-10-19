@@ -8,7 +8,7 @@ namespace Snacks_App.Models
 {
     public class ShoppingCart
     {
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public decimal Total { get; set; }
         public int ProductId { get; set; }

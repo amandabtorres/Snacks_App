@@ -219,5 +219,11 @@ namespace Snacks_App.Services
             }
         }
 
+        public async Task<(List<ShoppingCartItem>? CarrinhoCompraItems, string? ErrorMessage)> GetItemsShoppingCart(int usuarioId)
+        {
+            var endpoint = $"api/ShoppingCartItems/{usuarioId}";
+            return await GetAsync<List<ShoppingCartItem>>(endpoint);
+        }
+
     }
 }

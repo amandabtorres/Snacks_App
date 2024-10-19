@@ -20,7 +20,7 @@ namespace Snacks_App
         private void ConfigureShell()
         {
             var homePage = new HomePage(_apiService, _validator);
-            var carrinhoPage = new CartPage();
+            var carrinhoPage = new CartPage(_apiService, _validator);
             var favoritosPage = new FavoritesPage();
             var perfilPage = new ProfilePage();
 
