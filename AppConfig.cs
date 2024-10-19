@@ -9,5 +9,6 @@ namespace Snacks_App
     public static class AppConfig
     {
         public static readonly string BaseUrl = "https://zspgzfdw-7102.uks1.devtunnels.ms/";
+        public static readonly string tituloHomePage = "Lanches Torres";
     }
 }

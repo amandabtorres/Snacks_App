@@ -9,13 +9,14 @@ public partial class HomePage : ContentPage
     private readonly ApiService _apiService;
     private readonly IValidator _validator;
     private bool _loginPageDisplayed = false;
-
+    private bool _isDataLoaded = false;
     public HomePage(ApiService apiService, IValidator validator)
     {
         InitializeComponent();
-        _apiService = apiService ?? throw new ArgumentNullException(nameof(apiService));
-        LblNomeUsuario.Text = "Olá, " + Preferences.Get("usuarionome", string.Empty);
+        LblNomeUsuario.Text = "Ol , " + Preferences.Get("usuarionome", string.Empty);
+        _apiService = apiService;
         _validator = validator;
+        Title = AppConfig.tituloHomePage;
     }
 
     protected override async void OnAppearing()
@@ -117,7 +118,17 @@ public partial class HomePage : ContentPage
 
     private void CvCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        var currentSelection = e.CurrentSelection.FirstOrDefault() as Category;
 
+        if (currentSelection == null) return;
+
+
+        Navigation.PushAsync(new ListProductsPage(currentSelection.Id,
+                                                     currentSelection.Name!,
+                                                     _apiService,
+                                                     _validator));
+
+        ((CollectionView)sender).SelectedItem = null;
     }
 
     private void CvMaisVendidos_SelectionChanged(object sender, SelectionChangedEventArgs e)
