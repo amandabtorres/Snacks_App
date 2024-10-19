@@ -177,6 +177,12 @@ namespace Snacks_App.Services
             }
         }
 
+        public async Task<(Product? ProdutoDetalhe, string? ErrorMessage)> GetProductDetails(int produtoId)
+        {
+            string endpoint = $"api/products/{produtoId}";
+            return await GetAsync<Product>(endpoint);
+        }
+
         private void AddAuthorizationHeader()
         {
             var token = Preferences.Get("accesstoken", string.Empty);

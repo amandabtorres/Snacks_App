@@ -13,7 +13,7 @@ public partial class HomePage : ContentPage
     public HomePage(ApiService apiService, IValidator validator)
     {
         InitializeComponent();
-        LblNomeUsuario.Text = "Ol , " + Preferences.Get("usuarionome", string.Empty);
+        LblNomeUsuario.Text = "Olá , " + Preferences.Get("usuarionome", string.Empty);
         _apiService = apiService;
         _validator = validator;
         Title = AppConfig.tituloHomePage;
