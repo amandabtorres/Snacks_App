@@ -13,7 +13,7 @@ namespace Snacks_App.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://localhost:7102/";
+        private readonly string _baseUrl = "https://zspgzfdw-7102.uks1.devtunnels.ms/";
         private readonly ILogger<ApiService> _logger;
 
         JsonSerializerOptions _serializerOptions;
