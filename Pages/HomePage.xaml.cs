@@ -123,21 +123,38 @@ public partial class HomePage : ContentPage
         if (currentSelection == null) return;
 
 
-        Navigation.PushAsync(new ListProductsPage(currentSelection.Id,
-                                                     currentSelection.Name!,
-                                                     _apiService,
-                                                     _validator));
+        Navigation.PushAsync(new ListProductsPage(currentSelection.Id, currentSelection.Name!, _apiService, _validator));
 
         ((CollectionView)sender).SelectedItem = null;
     }
 
     private void CvMaisVendidos_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-
+        if (sender is CollectionView collectionView)
+        {
+            NavigateToProductDetailsPage(collectionView, e);
+        }
     }
 
     private void CvPopulares_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (sender is CollectionView collectionView)
+        {
+            NavigateToProductDetailsPage(collectionView, e);
+        }
+    }
 
+    private void NavigateToProductDetailsPage(CollectionView collectionView, SelectionChangedEventArgs e)
+    {
+        var currentSelection = e.CurrentSelection.FirstOrDefault() as Product;
+
+        if (currentSelection == null)
+            return;
+
+        Navigation.PushAsync(new ProductDetailsPage(
+                                 currentSelection.Id, currentSelection.Name!, _apiService, _validator
+        ));
+
+        collectionView.SelectedItem = null;
     }
 }
