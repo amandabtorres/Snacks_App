@@ -24,6 +24,21 @@ public partial class CartPage : ContentPage
     {
         base.OnAppearing();
         await GetItemsShoppingCart();
+
+        bool enderecoSalvo = Preferences.ContainsKey("endereco");
+        if (enderecoSalvo)
+        {
+            string nome = Preferences.Get("nome", string.Empty);
+            string endereco = Preferences.Get("endereco", string.Empty);
+            string telefone = Preferences.Get("telefone", string.Empty);
+
+            //formatar os dados conforme desejo na label
+            LblEndereco.Text = $"{nome}\n{endereco}\n{telefone}";
+        }
+        else
+        {
+            LblEndereco.Text = "Informe o seu endereço";
+        }
     }
 
     private async Task<bool> GetItemsShoppingCart()
@@ -87,5 +102,50 @@ public partial class CartPage : ContentPage
         _loginPageDisplayed = true;
 
         await Navigation.PushAsync(new LoginPage(_apiService, _validator));
+    }
+
+    private async void BtnDecrementar_Clicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.BindingContext is ShoppingCartItem itemCarrinho)
+        {
+            if (itemCarrinho.Quantity == 1) return;
+            else
+            {
+                itemCarrinho.Quantity--;
+                UpdatePriceTotal();
+                await _apiService.UpdateQuantityItemCart(itemCarrinho.ProductId, "diminuir");
+            }
+        }
+
+    }
+
+    private async void BtnIncrementar_Clicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.BindingContext is ShoppingCartItem itemCarrinho)
+        {
+            itemCarrinho.Quantity++;
+            UpdatePriceTotal();
+            await _apiService.UpdateQuantityItemCart(itemCarrinho.ProductId, "aumentar");
+        }
+    }
+
+    private async void BtnDeletar_Clicked(object sender, EventArgs e)
+    {
+        if (sender is ImageButton button && button.BindingContext is ShoppingCartItem itemCarrinho)
+        {
+            bool resposta = await DisplayAlert("Confirma  o",
+                          "Tem certeza que deseja excluir este item do carrinho?", "Sim", "N o");
+            if (resposta)
+            {
+                ItemsShoppingCart.Remove(itemCarrinho);
+                UpdatePriceTotal();
+                await _apiService.UpdateQuantityItemCart(itemCarrinho.ProductId, "apagar");
+            }
+        }
+    }
+
+    private void BtnEditaEndereco_Clicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new AddressPage());
     }
 }
