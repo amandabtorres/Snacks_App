@@ -14,7 +14,7 @@ namespace Snacks_App.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://bctjq5xp-7102.uks1.devtunnels.ms/";
+        private readonly string _baseUrl = "https://kwgshz7l-7102.uks1.devtunnels.ms/";
         private readonly ILogger<ApiService> _logger;
 
         JsonSerializerOptions _serializerOptions;
@@ -102,6 +102,36 @@ namespace Snacks_App.Services
                 return new ApiResponse<bool> { ErrorMessage = ex.Message };
             }
         }
+
+        public async Task<ApiResponse<bool>> ConfirmarPedido(Order order)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(order, _serializerOptions);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await PostRequest("api/Orders", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string errorMessage = response.StatusCode == HttpStatusCode.Unauthorized
+                        ? "Unauthorized"
+                        : $"Erro ao enviar requisição HTTP: {response.StatusCode}";
+
+                    _logger.LogError($"Erro ao enviar requisição HTTP: {response.StatusCode}");
+                    return new ApiResponse<bool> { ErrorMessage = errorMessage };
+                }
+                return new ApiResponse<bool> { Data = true };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Erro ao confirmar pedido: {ex.Message}");
+                return new ApiResponse<bool> { ErrorMessage = ex.Message };
+            }
+        }
+
+
+
         private async Task<HttpResponseMessage> PostRequest(string uri, HttpContent content)
         {
             var baseUrl = _baseUrl + uri;

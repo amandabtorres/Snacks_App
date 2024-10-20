@@ -10,6 +10,7 @@ public partial class HomePage : ContentPage
     private readonly IValidator _validator;
     private bool _loginPageDisplayed = false;
     private bool _isDataLoaded = false;
+
     public HomePage(ApiService apiService, IValidator validator)
     {
         InitializeComponent();
@@ -22,10 +23,22 @@ public partial class HomePage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await GetListCategories();
-        await GetBestSellers();
-        await GetPopular();
+        if (!_isDataLoaded)
+        {
+            await LoadDataAsync();
+            _isDataLoaded = true;
+        }
     }
+
+    private async Task LoadDataAsync()
+    {
+        var categoriasTask = GetListCategories();
+        var maisVendidosTask = GetBestSellers();
+        var popularesTask = GetPopular();
+
+        await Task.WhenAll(categoriasTask, maisVendidosTask, popularesTask);
+    }
+
 
     private async Task<IEnumerable<Category>> GetListCategories()
     {

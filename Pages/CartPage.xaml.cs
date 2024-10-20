@@ -10,6 +10,7 @@ public partial class CartPage : ContentPage
     private readonly ApiService _apiService;
     private readonly IValidator _validator;
     private bool _loginPageDisplayed = false;
+    private bool _isNavigatingToEmptyCartPage = false;
 
     private ObservableCollection<ShoppingCartItem> ItemsShoppingCart = new ObservableCollection<ShoppingCartItem>();
 
@@ -23,22 +24,55 @@ public partial class CartPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await GetItemsShoppingCart();
 
+        if (IsNavigatingToEmptyCartPage()) return;
+
+        bool hasItems = await GetItemsShoppingCart();
+
+        if (hasItems)
+        {
+            ExibirEndereco();
+        }
+        else
+        {
+            await NavegarParaCarrinhoVazio();
+        }
+    }
+
+    private bool IsNavigatingToEmptyCartPage()
+    {
+        if (_isNavigatingToEmptyCartPage)
+        {
+            _isNavigatingToEmptyCartPage = false;
+            return true;
+        }
+        return false;
+    }
+
+    private void ExibirEndereco()
+    {
         bool enderecoSalvo = Preferences.ContainsKey("endereco");
+
         if (enderecoSalvo)
         {
             string nome = Preferences.Get("nome", string.Empty);
             string endereco = Preferences.Get("endereco", string.Empty);
             string telefone = Preferences.Get("telefone", string.Empty);
 
-            //formatar os dados conforme desejo na label
-            LblEndereco.Text = $"{nome}\n{endereco}\n{telefone}";
+            // Formatar os dados conforme desejado na label
+            LblEndereco.Text = $"{nome}\n{endereco} \n{telefone}";
         }
         else
         {
             LblEndereco.Text = "Informe o seu endereço";
         }
+    }
+
+    private async Task NavegarParaCarrinhoVazio()
+    {
+        LblEndereco.Text = string.Empty;
+        _isNavigatingToEmptyCartPage = true;
+        await Navigation.PushAsync(new CartEmptyPage());
     }
 
     private async Task<bool> GetItemsShoppingCart()
@@ -147,5 +181,41 @@ public partial class CartPage : ContentPage
     private void BtnEditaEndereco_Clicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new AddressPage());
+    }
+
+    private async void TapConfirmarPedido_Tapped(object sender, TappedEventArgs e)
+    {
+        if (ItemsShoppingCart == null || !ItemsShoppingCart.Any())
+        {
+            await DisplayAlert("Informação", "Seu carrinho está vazio ou o pedido já foi confirmado.", "OK");
+            return;
+        }
+
+        var pedido = new Order()
+        {
+            Address = LblEndereco.Text,
+            UserId = Preferences.Get("usuarioid", 0),
+            Total = Convert.ToDecimal(LblPrecoTotal.Text)
+        };
+
+        var response = await _apiService.ConfirmarPedido(pedido);
+
+        if (response.HasError)
+        {
+            if (response.ErrorMessage == "Unauthorized")
+            {
+                // Redirecionar para a p gina de login
+                await DisplayLoginPage();
+                return;
+            }
+            await DisplayAlert("Opa !!!", $"Algo deu errado: {response.ErrorMessage}", "Cancelar");
+            return;
+        }
+
+        ItemsShoppingCart.Clear();
+        LblEndereco.Text = "Informe o seu endereço";
+        LblPrecoTotal.Text = "0.00";
+
+        await Navigation.PushAsync(new OrderConfirmedPage());
     }
 }
