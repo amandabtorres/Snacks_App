@@ -339,5 +339,20 @@ namespace Snacks_App.Services
                 return new ApiResponse<bool> { ErrorMessage = ex.Message };
             }
         }
+
+        public async Task<(List<OrdersByUser>?, string? ErrorMessage)> GetPedidosPorUsuario(int usuarioId)
+        {
+
+            string endpoint = $"api/Orders/GetOrdersByUser/{usuarioId}";
+
+            return await GetAsync<List<OrdersByUser>>(endpoint);
+        }
+
+        public async Task<(List<OrderDetails>?, string? ErrorMessage)> GetOrderDetails(int pedidoId)
+        {
+            string endpoint = $"api/Orders/GetOrderDetails/{pedidoId}";
+
+            return await GetAsync<List<OrderDetails>>(endpoint);
+        }
     }
 }
