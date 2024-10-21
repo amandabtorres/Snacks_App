@@ -47,7 +47,7 @@
                             <Label Grid.Row="1"
                                     Grid.Column="1"
                                     FontSize="12"  
-                                    Text="{Binding DateOrder, StringFormat='{0:dd.MM.yyyy hh:mm}'}"
+                                    Text="{Binding OrderDate, StringFormat='{0:dd.MM.yyyy hh:mm}'}"
                                     FontAttributes="Bold"/>
                             <Label Grid.Row="2"
                                     Grid.Column="0"

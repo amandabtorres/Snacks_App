@@ -10,6 +10,6 @@ namespace Snacks_App.Models
     {
         public int Id { get; set; }
         public decimal Total { get; set; }
-        public DateTime DateOrder { get; set; }
+        public DateTime OrderDate { get; set; }
     }
 }

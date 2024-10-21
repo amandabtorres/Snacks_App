@@ -13,7 +13,7 @@ public partial class FavoritesPage : ContentPage
     public FavoritesPage(ApiService apiService, IValidator validator)
 	{
 		InitializeComponent();
-        _favoriteService = new FavoriteService();
+        _favoriteService = ServiceFactory.CreateFavoritosService();
         _apiService = apiService;
         _validator = validator;
     }

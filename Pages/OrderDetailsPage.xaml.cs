@@ -26,6 +26,10 @@ public partial class OrderDetailsPage : ContentPage
     {
         try
         {
+            // Exibe o indicador de carregamento
+            loadIndicator.IsRunning = true;
+            loadIndicator.IsVisible = true;
+
             var (pedidoDetalhes, errorMessage) = await _apiService.GetOrderDetails(pedidoId);
 
             if (errorMessage == "Unauthorized" && !_loginPageDisplayed)
@@ -47,6 +51,12 @@ public partial class OrderDetailsPage : ContentPage
         catch (Exception)
         {
             await DisplayAlert("Erro", "Ocorreu um erro ao obter os detalhes. Tente novamente mais tarde.", "OK");
+        }
+        finally
+        {
+            // Esconde o indicador de carregamento
+            loadIndicator.IsRunning = false;
+            loadIndicator.IsVisible = false;
         }
     }
 

@@ -27,6 +27,10 @@ public partial class OrdersPage : ContentPage
     {
         try
         {
+            // Exibe o indicador de carregamento
+            loadPedidosIndicator.IsRunning = true;
+            loadPedidosIndicator.IsVisible = true;
+
             var (pedidos, errorMessage) = await _apiService.GetPedidosPorUsuario(Preferences.Get("usuarioid", 0));
 
             if (errorMessage == "Unauthorized" && !_loginPageDisplayed)
@@ -52,6 +56,12 @@ public partial class OrdersPage : ContentPage
         catch (Exception)
         {
             await DisplayAlert("Erro", "Ocorreu um erro ao obter os pedidos. Tente novamente mais tarde.", "OK");
+        }
+        finally
+        {
+            // Esconde o indicador de carregamento
+            loadPedidosIndicator.IsRunning = false;
+            loadPedidosIndicator.IsVisible = false;
         }
     }
 
