@@ -14,7 +14,7 @@ namespace Snacks_App.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://3xqqjwtn-7102.uks1.devtunnels.ms/";
+        private readonly string _baseUrl = "https://mb5nnq4z-7102.uks1.devtunnels.ms/";
         private readonly ILogger<ApiService> _logger;
 
         JsonSerializerOptions _serializerOptions;
@@ -305,6 +305,38 @@ namespace Snacks_App.Services
             {
                 _logger.LogError($"Erro ao enviar requisição PUT para {uri}: {ex.Message}");
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+        }
+
+        public async Task<(ImageProfile? ImagemPerfil, string? ErrorMessage)> GetImageUserProfile()
+        {
+            string endpoint = "api/Users/GetUserImage";
+            return await GetAsync<ImageProfile>(endpoint);
+        }
+
+        public async Task<ApiResponse<bool>> UploadImageUser(byte[] imageArray)
+        {
+            try
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new ByteArrayContent(imageArray), "imagem", "image.jpg");
+                var response = await PostRequest("api/Users/UploadUserPhoto", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string errorMessage = response.StatusCode == HttpStatusCode.Unauthorized
+                      ? "Unauthorized"
+                      : $"Erro ao enviar requisição HTTP: {response.StatusCode}";
+
+                    _logger.LogError($"Erro ao enviar requisição HTTP: {response.StatusCode}");
+                    return new ApiResponse<bool> { ErrorMessage = errorMessage };
+                }
+                return new ApiResponse<bool> { Data = true };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Erro ao fazer upload da imagem do usuário: {ex.Message}");
+                return new ApiResponse<bool> { ErrorMessage = ex.Message };
             }
         }
     }
