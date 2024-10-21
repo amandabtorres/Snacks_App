@@ -49,7 +49,7 @@ public partial class ProfilePage : ContentPage
             }
         }
 
-        if (response?.UrlImagem is not null)
+        if (response?.UrlImage is not null)
         {
             return response.UrlImagem;
         }
@@ -128,16 +128,17 @@ public partial class ProfilePage : ContentPage
 
     private void MinhaConta_Tapped(object sender, TappedEventArgs e)
     {
-
+        Navigation.PushAsync(new MyAccountPage(_apiService));
     }
 
     private void Perguntas_Tapped(object sender, TappedEventArgs e)
     {
-
+        Navigation.PushAsync(new QuestionsPage());
     }
 
     private void BtnLogout_Clicked(object sender, EventArgs e)
     {
-
+        Preferences.Set("accesstoken", string.Empty);
+        Application.Current!.MainPage = new NavigationPage(new LoginPage(_apiService, _validator));
     }
 }

@@ -320,7 +320,7 @@ namespace Snacks_App.Services
             {
                 var content = new MultipartFormDataContent();
                 content.Add(new ByteArrayContent(imageArray), "imagem", "image.jpg");
-                var response = await PostRequest("api/Users/UploadUserPhoto", content);
+                var response = await PostRequest("api/Users/uploadimageuser", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

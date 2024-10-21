@@ -33,14 +33,14 @@
                            WidthRequest="60"
                            Grid.RowSpan="3"
                            Grid.Column="0"
-                           Source="{Binding UrlImagem}" />
+                           Source="{Binding UrlImage}" />
 
                             <Label Grid.Row="0"
                            Grid.Column="1"
                            Text="{Binding ProductName}" />
                             <Label Grid.Row="1"
                            Grid.Column="1"
-                           Text="{Binding ProductPrice,StringFormat='R{0:C}'}" />
+                           Text="{Binding ProductPrice,StringFormat='{0:C}'}" />
                             <Label Grid.Row="2"
                            Grid.Column="1">
                                 <Label.FormattedText>
